@@ -19,15 +19,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme();
 
 function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
-
+  const url = window.location.href;
+  const usuario = url.split('/')[4];
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -46,7 +39,7 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -76,6 +69,7 @@ function Login() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              href= { usuario == "Produtor" ? "/Produtor" : "/Consumidor" }
             >
               Sign In
             </Button>
