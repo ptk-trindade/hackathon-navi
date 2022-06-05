@@ -2,7 +2,6 @@
 import pandas as pd
 # import json
 
-# import functions as fn
 
 app = Flask(__name__)
 
@@ -45,45 +44,44 @@ def get_distributers(): # get all distributes
 # IMOVEIS
 
 @app.route('/imoveis/<user_id>', methods=["GET"])
-def get_imoveis(user_id): # get consume by consumer/property
+def get_imoveis(user_id): # get consume by consumer
     
     # get dataframe data
     df_imoveis = pd.read_csv("backend/database/imoveis.csv")
     df_consumo = pd.read_csv("backend/database/consumo.csv")
-    
+    df_produtores = pd.read_csv("backend/database/produtores.csv")
+    df_distribuidoras = pd.read_csv("backend/database/distribuidoras.csv")
+
     filter = df_imoveis["usuario_id"] == int(user_id)
     df_imoveis = df_imoveis.where(filter)
 
     # merge dataframes
-    df_view = pd.merge(df_imoveis, df_consumo, how="inner", left_on=['id'], right_on=['imovel_id']).sort_values("periodo", ascending=False)
+    df_view = pd.merge(df_imoveis, df_consumo, how="inner", left_on=['id'], right_on=['imovel_id'])
+    df_view = pd.merge(df_view, df_produtores, how="inner", left_on=['produtor_id'], right_on=['id'])
+    df_view = pd.merge(df_view, df_distribuidoras, how="inner", left_on=['distribuidora_id'], right_on=['id'])
 
-    # return {"success": True, "df": df_view.to_dict('records')}
     # crete new columns
-    expenses_total = []
-    consumo_total = []
-    for c in range(len(df_view["consumo_dia"])):
+    expenses = []
+    economies = []
+    for c in range(len(df_view["consumo"])):
 
-        exp_day = df_view["consumo_dia"][c] * df_view["preco_kwh_dia"][c]
-        exp_night = df_view["consumo_noite"][c] * df_view["preco_kwh_noite"][c]
-        exp_total = exp_day + exp_night
+        expense = df_view["consumo"][c] * df_view["preco_kwh"][c]
+        default_price = df_view["consumo"][c] * df_view["preco_kwh_dist"][c]
 
-        expenses_total.append(exp_total)
+        expenses.append(expense)
+        economies.append(default_price - expense)
 
-
-    df_view["gastos_total"] = expenses_total
+    df_view["gastos"] = expenses
+    df_view["economia"] = economies
 
     # select columns and sort
-    df_view = df_view[
+    df_order = df_view[
         [
+            "imovel_id",
             "nome_x",
             "nome_y",
-            "consumo_dia",
-            "consumo_noite",
-            "preco_kwh_dia",
-            "preco_kwh_noite",
-            "gastos_dia",
-            "gastos_noite",
-            "gastos_total",
+            "consumo",
+            "gastos",
             "economia",
             "periodo",
             "energia_biomassa", 
@@ -97,12 +95,21 @@ def get_imoveis(user_id): # get consume by consumer/property
     ].sort_values("periodo", ascending=False)
     
 
+    # group by property + get only last month
+    last_month = [value for value in df_order.iloc[0:1]["periodo"]][0]
+
+    df_view = df_order[df_order["periodo"] == last_month]
+
+    df_view = df_view.groupby(['imovel_id']).sum()
+
     return {"success": True, "df": df_view.to_dict('records')}
+    # return {"success": True, "df": df_view.to_dict('records'), "a":df_view.to_dict(), "last": last_month}
+
 
 
 
 @app.route('/imoveis/consumos/<imovel_id>', methods=["GET"])
-def get_imoveis_consumos(imovel_id): # get consume by consumer/property
+def get_imoveis_consumos(imovel_id): # get consume by property
     
     # get dataframe data
     df_imoveis = pd.read_csv("backend/database/imoveis.csv")
@@ -119,42 +126,25 @@ def get_imoveis_consumos(imovel_id): # get consume by consumer/property
     df_view = pd.merge(df_view, df_distribuidoras, how="inner", left_on=['distribuidora_id'], right_on=['id'])
 
     # crete new columns
-    expenses_day = []
-    expenses_night = []
-    expenses_total = []
+    expenses = []
     economies = []
-    for c in range(len(df_view["consumo_dia"])):
+    for c in range(len(df_view["consumo"])):
 
-        exp_day = df_view["consumo_dia"][c] * df_view["preco_kwh_dia"][c]
-        exp_night = df_view["consumo_noite"][c] * df_view["preco_kwh_noite"][c]
-        exp_total = exp_day + exp_night
+        expense = df_view["consumo"][c] * df_view["preco_kwh"][c]
+        default_price = df_view["consumo"][c] * df_view["preco_kwh_dist"][c]
 
-        default_price = (df_view["consumo_dia"][c] + df_view["consumo_noite"][c]) * df_view["preco_kwh"][c]
-        economy = default_price - (exp_day + exp_night)
+        expenses.append(expense)
+        economies.append(default_price - expense)
 
-        expenses_day.append(exp_day)
-        expenses_night.append(exp_night)
-        expenses_total.append(exp_total)
-
-        economies.append(economy)
-
-    df_view["gastos_dia"] = expenses_day
-    df_view["gastos_noite"] = expenses_night
-    df_view["gastos_total"] = expenses_total
+    df_view["gastos"] = expenses
     df_view["economia"] = economies
 
     # select columns and sort
     df_view = df_view[
         [
-            "nome_x",
-            "nome_y",
-            "consumo_dia",
-            "consumo_noite",
-            "preco_kwh_dia",
-            "preco_kwh_noite",
-            "gastos_dia",
-            "gastos_noite",
-            "gastos_total",
+            "consumo",
+            "preco_kwh",
+            "gastos",
             "economia",
             "periodo",
             "energia_biomassa", 
@@ -187,7 +177,7 @@ def post_imovel(): # adds new property to client
     
 
     #_s = source
-    df_s = pd.read_csv(f"database/imoveis.csv") # carrega csv
+    df_s = pd.read_csv(f"backend/database/imoveis.csv") # carrega csv
     df_s = df_s[["id", "nome", "endereco", "distribuidora_id", "usuario_id"]]
 
     #_n = new
@@ -197,7 +187,7 @@ def post_imovel(): # adds new property to client
     df_f = df_s.append(df_n, ignore_index = True) # appenda no existente
 
     #_f = final
-    df_f.to_csv("database/imoveis.csv") # re-cria a tabela
+    df_f.to_csv("backend/database/imoveis.csv") # re-cria a tabela
 
     return {"success": True}
 
@@ -229,7 +219,7 @@ def post_alterar_precos():
     except:
         return {"success": False, "message": "json inválido"}, 400
 
-    keys = ("produtor_id","preco_kwh_dia", "preco_kwh_noite")
+    keys = ("produtor_id","preco_kwh")
     for k in keys:
         if k not in json_data:
             return {"success": False, "message": f"Falta campo {k} no json"}, 400
@@ -240,8 +230,7 @@ def post_alterar_precos():
 
     # change prices in dataframe
 
-    df_s.loc[df_s['id'] == int(json_data["produtor_id"]), 'preco_kwh_dia'] = float(json_data["preco_kwh_dia"])
-    df_s.loc[df_s['id'] == int(json_data["produtor_id"]), 'preco_kwh_noite'] = float(json_data["preco_kwh_noite"])
+    df_s.loc[df_s['id'] == int(json_data["produtor_id"]), 'preco_kwh'] = float(json_data["preco_kwh"])
 
     # write to csv
 
@@ -259,7 +248,7 @@ def create(table_name):
     json_data = request.get_json(force=True)
 
     df = pd.DataFrame(data=json_data) # cria df os dados
-    df.to_csv(f"database/{table_name}.csv") # cria a tabela (write)
+    df.to_csv(f"backend/database/{table_name}.csv") # cria a tabela (write)
 
     return {"success": True, "df": df.to_dict('records')}
 # TEMPLATE vv
@@ -291,7 +280,7 @@ def write(table_name):
     df_f = df_s.append(df_n, ignore_index = True) # appenda no existente
 
     #_f = final
-    df_f.to_csv(f"database/{table_name}.csv") # re-cria a tabela
+    df_f.to_csv(f"backend/database/{table_name}.csv") # re-cria a tabela
 
     return {"success": True, "df": df_f.to_dict('records')}
 
