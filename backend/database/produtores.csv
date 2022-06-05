@@ -1,3 +1,3 @@
-,id,nome,energia_hidreletrica,energia_eolica,energia_solar,energia_biomassa,energia_maremotriz,energia_geotermica,energia_fossil,energia_nuclear,preco_kwh
+,id,nome_produtor,energia_hidreletrica,energia_eolica,energia_solar,energia_biomassa,energia_maremotriz,energia_geotermica,energia_fossil,energia_nuclear,preco_kwh
 0,1,energYes,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,0.4
 1,2,intelithermal,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE,0.5
