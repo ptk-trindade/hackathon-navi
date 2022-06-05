@@ -5,6 +5,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import SolarPowerIcon from '@mui/icons-material/SolarPower';
+import Button from '@mui/material/Button';
+
 
 const theme = createTheme();
 
@@ -37,6 +39,7 @@ export default function Expand() {
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
+                <Button href='/Consumidor' sx={{m: 5}}>Voltar</Button>  
 
                 <Box sx={{
                     display: 'flex',

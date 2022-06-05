@@ -12,6 +12,7 @@ import ScienceIcon from '@mui/icons-material/Science';
 import SolarPowerIcon from '@mui/icons-material/SolarPower';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import VolcanoIcon from '@mui/icons-material/Volcano';
+import Button from '@mui/material/Button';
 
 const theme = createTheme();
 
@@ -83,6 +84,7 @@ export default function AddContrato() {
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
+                <Button href='/Consumidor' sx={{m: 5}}>Voltar</Button>  
                 {dados_produtor}
             </Container>
         </ThemeProvider>
