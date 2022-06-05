@@ -1,4 +1,4 @@
-,id,nome,preco_kwh_dist
+,id,nome_distribuidora,preco_kwh_dist
 0,1,Eletroacre,0.64
 1,2,Ceal,0.75
 2,3,AmE,0.804
