@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import SolarPowerIcon from '@mui/icons-material/SolarPower';
 import Button from '@mui/material/Button';
+import { IconButton } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 const theme = createTheme();
@@ -102,6 +104,9 @@ export default function Expand() {
                         <Typography component="h2" variant="h4" sx={{ marginBottom: "2", }}>{dados.nome_y}</Typography>
                         <SolarPowerIcon sx={{ width: "50px", height: "50px" }} />
                     </Box>
+                    <IconButton sx={{ width: "100px"}} href="/Consumidor/AdicionarContrato">
+                            <AddCircleIcon />
+                    </IconButton>
                 </Box>
 
             </Container>
