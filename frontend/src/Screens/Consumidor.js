@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Imoveis } from '../components';
+import { IconButton } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const theme = createTheme();
 
@@ -20,7 +22,7 @@ function Consumidor() {
     const imoveis = [
         { id: 0, nome: 'Imóvel 1', gasto: 100.00, consumo: 1000.00 },
         { id: 1, nome: 'Imóvel 2', gasto: 70.00, consumo: 900.00 },
-        { id: 2,nome: 'Imóvel 3', gasto: 50.00, consumo: 800.00 },
+        { id: 2,nome: 'Imóvel 3', gasto: 50.50, consumo: 800.00 },
     ];
     
     
@@ -39,6 +41,7 @@ function Consumidor() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        
                     }}
                 >
                     <Box
@@ -47,17 +50,19 @@ function Consumidor() {
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'start',
-                            outline: 'true',
+                            border: '2px solid',
+                            borderRadius: '10px',
                         }}
                     >
-                        <Typography component="h1" variant="h4" sx={{ margin: 2.5 }}>Menu</Typography>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main', margin: 2.5 }}>
+                        
+                        <Typography component="h1" variant="h4" sx={{ margin: 6 }}>Menu</Typography>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main', margin: 6 }}>
                             <LockOutlinedIcon />
                         </Avatar>
                     </Box>
                     <Box
                         sx={{
-                            marginTop: 5,
+                            margin: 1,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -65,7 +70,9 @@ function Consumidor() {
                     >
                         <Typography component="h1" variant="h5" sx={{ margin: 5 }}>Qnt Economizou</Typography>
                         {areaImoveis}
-                        <Typography component="h1" variant="h5" sx={{ margin: 5 }}>Adc/Buscar contrato</Typography>
+                        <IconButton sx={{ width: "100px"}} href="/Consumidor/AdicionarContrato">
+                            <AddCircleIcon />
+                        </IconButton>
                     </Box>
                 </Box>
             </Container>
