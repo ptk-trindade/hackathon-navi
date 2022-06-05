@@ -13,8 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Imoveis } from '../components';
-import { IconButton } from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 const theme = createTheme();
 
@@ -70,9 +69,6 @@ function Consumidor() {
                     >
                         <Typography component="h1" variant="h5" sx={{ margin: 5 }}>Qnt Economizou</Typography>
                         {areaImoveis}
-                        <IconButton sx={{ width: "100px"}} href="/Consumidor/AdicionarContrato">
-                            <AddCircleIcon />
-                        </IconButton>
                     </Box>
                 </Box>
             </Container>
