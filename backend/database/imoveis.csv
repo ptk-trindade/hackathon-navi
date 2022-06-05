@@ -1,3 +1,3 @@
-,id,nome,endereco,distribuidora_id,usuario_id
+,id,nome_imovel,endereco,distribuidora_id,usuario_id
 0,1,casa,rua dos jacarandas,19,1
 1,2,apartamento,Rua dos Flamboyans,19,1

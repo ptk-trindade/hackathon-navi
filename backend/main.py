@@ -103,7 +103,6 @@ def get_imoveis(user_id): # get consume by consumer
     df_view = df_view.groupby(['imovel_id']).sum()
 
     return {"success": True, "df": df_view.to_dict('records')}
-    # return {"success": True, "df": df_view.to_dict('records'), "a":df_view.to_dict(), "last": last_month}
 
 
 
