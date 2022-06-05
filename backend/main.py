@@ -7,7 +7,7 @@ import functions as fn
 app = Flask(__name__)
 
 
-# USERS
+## TO CONSUMERS
 @app.route('/user/<user_id>', methods=["GET"])
 def get_user(user_id):
     
@@ -23,32 +23,18 @@ def get_user(user_id):
 # PRODUCERS
 
 @app.route('/producers', methods=["GET"])
-def get_producers(): # ok
+def get_producers(): # get all producers
     
     df = pd.read_csv("database/produtores.csv")
     print(df)
 
     return {"success": True, "df": df.to_dict('records')}
 
-@app.route('/producers/<user_id>', methods=["GET"])
-def get_producers_user(user_id):
-    
-    df_prod = pd.read_csv("database/produtores.csv")
-    user_dict = get_user(user_id)
-    if not user_dict["success"]:
-        return {"success": False, "message": "Erro ao buscar usuário"}, 400
-
-    print("user:", user_dict["df"])
-    df_resp = fn.get_distance(df_prod, user_dict["df"]["longitude"]["0"], user_dict["df"]["latitude"]["0"])
-
-    return {"success": True, "df": df_resp.to_dict('records')}
-
-
 
 # DISTRIBUTERS
 
 @app.route('/distributers', methods=["GET"])
-def get_distributers(): # ok
+def get_distributers(): # get all distributes
     
     df = pd.read_csv("database/distribuidoras.csv")
     
@@ -58,40 +44,37 @@ def get_distributers(): # ok
 
 # IMOVEIS
 
-@app.route('/imoveis/user/<user_id>', methods=["GET"])
-def get_imoveis_user(user_id): # ok
+@app.route('/imoveis/<user_id>', methods=["GET"])
+def get_imoveis(user_id): # get consume by consumer/property
     
     # get dataframe data
-    df_imoveis = pd.read_csv("database/imoveis.csv").where(filter) # x
+    df_imoveis = pd.read_csv("database/imoveis.csv")
     df_consumo = pd.read_csv("database/consumo.csv")
-    df_produtores = pd.read_csv("database/produtores.csv") # y
     
-    #filter
     filter = df_imoveis["usuario_id"] == int(user_id)
     df_imoveis = df_imoveis.where(filter)
 
     # merge dataframes
-    df_view = pd.merge(df_imoveis, df_consumo, how="left", left_on=['id'], right_on=['imovel_id'])
-    df_view = pd.merge(df_view, df_produtores, how="left", left_on=['produtor_id'], right_on=['id'])
+    df_view = pd.merge(df_imoveis, df_consumo, how="inner", left_on=['id'], right_on=['imovel_id']).sort_values("periodo", ascending=False)
 
+    # return {"success": True, "df": df_view.to_dict('records')}
     # crete new columns
-    expenses_day = []
-    expenses_night = []
+    expenses_total = []
+    consumo_total = []
     for c in range(len(df_view["consumo_dia"])):
 
         exp_day = df_view["consumo_dia"][c] * df_view["preco_kwh_dia"][c]
         exp_night = df_view["consumo_noite"][c] * df_view["preco_kwh_noite"][c]
-        
-        expenses_day.append(exp_day)
-        expenses_night.append(exp_night)
+        exp_total = exp_day + exp_night
 
-    df_view["gastos_dia"] = expenses_day
-    df_view["gastos_noite"] = expenses_night
+        expenses_total.append(exp_total)
+
+
+    df_view["gastos_total"] = expenses_total
 
     # select columns and sort
     df_view = df_view[
         [
-            "id_y",
             "nome_x",
             "nome_y",
             "consumo_dia",
@@ -100,6 +83,8 @@ def get_imoveis_user(user_id): # ok
             "preco_kwh_noite",
             "gastos_dia",
             "gastos_noite",
+            "gastos_total",
+            "economia",
             "periodo",
             "energia_biomassa", 
             "energia_eolica", 
@@ -116,76 +101,80 @@ def get_imoveis_user(user_id): # ok
 
 
 
-@app.route('/imoveis/consumos/<filter_by>/<id>', methods=["GET"])
-def get_imoveis_consumos(filter_by, id): # ok
+@app.route('/imoveis/consumos/<imovel_id>', methods=["GET"])
+def get_imoveis_consumos(imovel_id): # get consume by consumer/property
     
     # get dataframe data
-    df_imoveis = pd.read_csv("database/imoveis.csv") # x
+    df_imoveis = pd.read_csv("database/imoveis.csv")
     df_consumo = pd.read_csv("database/consumo.csv")
-    df_produtores = pd.read_csv("database/produtores.csv") # y
+    df_produtores = pd.read_csv("database/produtores.csv")
+    df_distribuidoras = pd.read_csv("database/distribuidoras.csv")
     
-    #filter
-    if filter_by == "user":
-        filter = df_imoveis["usuario_id"] == int(id)
-        df_imoveis = df_imoveis.where(filter)
-
-    elif filter_by == "imovel":
-        filter = df_imoveis["id"] == int(id)
-        df_imoveis = df_imoveis.where(filter)
-
-    else:
-        return {"success": False, "message": "url errada passe 'user' ou 'imovel' depois de 'consumos/'"}, 400
-
+    filter = df_imoveis["id"] == int(imovel_id)
+    df_imoveis = df_imoveis.where(filter)
 
     # merge dataframes
     df_view = pd.merge(df_imoveis, df_consumo, how="inner", left_on=['id'], right_on=['imovel_id'])
     df_view = pd.merge(df_view, df_produtores, how="inner", left_on=['produtor_id'], right_on=['id'])
+    df_view = pd.merge(df_view, df_distribuidoras, how="inner", left_on=['distribuidora_id'], right_on=['id'])
 
     # crete new columns
-    # expenses_day = []
-    # expenses_night = []
-    # for c in range(len(df_view["consumo_dia"])):
+    expenses_day = []
+    expenses_night = []
+    expenses_total = []
+    economies = []
+    for c in range(len(df_view["consumo_dia"])):
 
-    #     exp_day = df_view["consumo_dia"][c] * df_view["preco_kwh_dia"][c]
-    #     exp_night = df_view["consumo_noite"][c] * df_view["preco_kwh_noite"][c]
-        
-    #     expenses_day.append(exp_day)
-    #     expenses_night.append(exp_night)
+        exp_day = df_view["consumo_dia"][c] * df_view["preco_kwh_dia"][c]
+        exp_night = df_view["consumo_noite"][c] * df_view["preco_kwh_noite"][c]
+        exp_total = exp_day + exp_night
 
-    # df_view["gastos_dia"] = expenses_day
-    # df_view["gastos_noite"] = expenses_night
+        default_price = (df_view["consumo_dia"][c] + df_view["consumo_noite"][c]) * df_view["preco_kwh"][c]
+        economy = default_price - (exp_day + exp_night)
+
+        expenses_day.append(exp_day)
+        expenses_night.append(exp_night)
+        expenses_total.append(exp_total)
+
+        economies.append(economy)
+
+    df_view["gastos_dia"] = expenses_day
+    df_view["gastos_noite"] = expenses_night
+    df_view["gastos_total"] = expenses_total
+    df_view["economia"] = economies
 
     # select columns and sort
-    # df_view = df_view[
-    #     [
-    #         "id_y",
-    #         "nome_x",
-    #         "nome_y",
-    #         "consumo_dia",
-    #         "consumo_noite",
-    #         "preco_kwh_dia",
-    #         "preco_kwh_noite",
-    #         "gastos_dia",
-    #         "gastos_noite",
-    #         "periodo",
-    #         "energia_biomassa", 
-    #         "energia_eolica", 
-    #         "energia_fossil", 
-    #         "energia_geotermica", 
-    #         "energia_hidreletrica", 
-    #         "energia_maremotriz", 
-    #         "energia_nuclear", 
-    #         "energia_solar"]
-    # ].sort_values("periodo", ascending=False)
+    df_view = df_view[
+        [
+            "nome_x",
+            "nome_y",
+            "consumo_dia",
+            "consumo_noite",
+            "preco_kwh_dia",
+            "preco_kwh_noite",
+            "gastos_dia",
+            "gastos_noite",
+            "gastos_total",
+            "economia",
+            "periodo",
+            "energia_biomassa", 
+            "energia_eolica", 
+            "energia_fossil", 
+            "energia_geotermica", 
+            "energia_hidreletrica", 
+            "energia_maremotriz", 
+            "energia_nuclear", 
+            "energia_solar"]
+    ].sort_values("periodo", ascending=False)
     
 
     return {"success": True, "df": df_view.to_dict('records')}
 
 
 @app.route('/create/imovel', methods=["POST"])
-def post_imovel(): # ok
+def post_imovel(): # adds new property to client
 
-    # verify        
+    # verify
     try:
         json_data = request.get_json(force=True)
     except:
@@ -213,8 +202,22 @@ def post_imovel(): # ok
     return {"success": True}
 
 
+## TO PRODUCERS
 
 
+
+
+
+# CREATE TABLE BY POST
+@app.route('/create/<table_name>', methods=["POST"])
+def create(table_name):
+    
+    json_data = request.get_json(force=True)
+
+    df = pd.DataFrame(data=json_data) # cria df os dados
+    df.to_csv(f"database/{table_name}.csv") # cria a tabela (write)
+
+    return {"success": True, "df": df.to_dict('records')}
 # TEMPLATE vv
 
 @app.route('/read/<table_name>', methods=["GET"])
@@ -250,15 +253,7 @@ def write(table_name):
 
 
 
-@app.route('/create/<table_name>', methods=["POST"])
-def create(table_name):
-    
-    json_data = request.get_json(force=True)
 
-    df = pd.DataFrame(data=json_data) # cria df os dados
-    df.to_csv(f"database/{table_name}.csv") # cria a tabela (write)
-
-    return {"success": True, "df": df.to_dict('records')}
 
 
 
