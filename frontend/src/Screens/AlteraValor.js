@@ -7,7 +7,20 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 
-const theme = createTheme();
+const theme = createTheme({
+  typography: {
+      fontFamily: [
+          'Montserrat',
+          'serif',
+      ].join(','),
+  },
+  palette: {
+      primary: {
+          main: '#F49C22'},
+      secondary: {main: '#333333'},
+      background: {main: '#FFFF'},
+  }
+})
 
 export default function AlteraValor() {
     return(
@@ -22,27 +35,19 @@ export default function AlteraValor() {
             alignItems: 'center',
           }}
         >
-          <Button href='/Produtor' sx={{m: 5}}>Voltar</Button>  
-          <Typography component="h1" variant="h5">
-            Alterar Valores
+          <Button href='/Produtor' sx={{m: 5}} variant="contained" >Voltar</Button>  
+          <Typography component="h1" variant="h5" marginBottom="10px">
+            Alterar Valor
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
-              margin="normal"
+              margin="Preço kWh"
               fullWidth
-              id="ValDia"
-              label="Valor Dia"
-              name="ValDia"
-              autoComplete="ValDia"
+              id="Preço kWh"
+              label="Preço kWh"
+              name="Preço kWh"
+              autoComplete="Preço kWh"
               autoFocus
-            />
-            <TextField
-              margin="normal"
-              fullWidth
-              name="ValNoite"
-              label="Valor Noite"
-              type="ValNoite"
-              id="ValNoite"
             />
             <Button
               type="submit"

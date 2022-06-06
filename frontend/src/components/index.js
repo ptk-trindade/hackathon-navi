@@ -5,3 +5,4 @@ export { getImoveis } from './api';
 export { getImovel } from './api';
 export { getProdutor } from './api';
 export { postPreco } from './api';
+export { default as Prod } from './Producao';

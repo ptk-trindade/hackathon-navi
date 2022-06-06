@@ -14,9 +14,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import logo from '../icon_slegenda.png';
+import './login.css';
 
 
-const theme = createTheme();
+const theme = createTheme({
+  typography: {
+      fontFamily: [
+          'Montserrat',
+          'serif',
+      ].join(','),
+  },
+  palette: {
+      primary: {
+          main: '#F49C22'},
+      secondary: {main: '#333333'},
+      background: {main: '#FFFF'},
+  }
+})
 
 function Login() {
   const url = window.location.href;
@@ -33,11 +48,9 @@ function Login() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <img className='Icon' src={logo} alt="logo"/>
           <Typography component="h1" variant="h5">
-            Sign in
+            Fazer Login
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
@@ -45,7 +58,7 @@ function Login() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Endereço de email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -55,7 +68,7 @@ function Login() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Senha"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -67,7 +80,7 @@ function Login() {
               sx={{ mt: 3, mb: 2 }}
               href= { usuario == "Produtor" ? "/Produtor" : "/Consumidor" }
             >
-              Sign In
+              Entrar
             </Button>
           </Box>
         </Box>
