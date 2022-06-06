@@ -23,13 +23,6 @@ Para rodar esta aplicação é necessário que você tenha as seguintes tecnolog
     - Axios 
     - React-router-dom
 
-## Instalação
-
---
-
-## Como usar
-
---
 
 ## Licença
 
