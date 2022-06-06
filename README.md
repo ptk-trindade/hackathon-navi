@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/ptk-trindade/hackathon-navi" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/971169761062953012/982819219492184164/Versao_Braba2.png">
+    <img src="https://cdn.discordapp.com/attachments/971169761062953012/983113885932478504/unknown.png">
   </a>
 </p>
 

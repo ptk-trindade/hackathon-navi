@@ -78,8 +78,8 @@ def get_imoveis(user_id): # get consume by consumer
     df_order = df_view[
         [
             "imovel_id",
-            "nome_x",
-            "nome_y",
+            "nome_imovel",
+            "nome_distribuidora",
             "consumo",
             "gastos",
             "economia",
@@ -100,7 +100,16 @@ def get_imoveis(user_id): # get consume by consumer
 
     df_view = df_order[df_order["periodo"] == last_month]
 
-    df_view = df_view.groupby(['imovel_id']).sum()
+    df_view = df_view.groupby(['imovel_id']).agg(
+        {'consumo': 'sum',
+         'economia': 'sum',
+         'gastos': 'sum', 
+         'gastos': 'sum', 
+         'gastos': 'sum', 
+         'nome_imovel': 'first',
+         'imovel_id': 'first',
+         'nome_distribuidora': 'first',
+         })
 
     return {"success": True, "df": df_view.to_dict('records')}
 
@@ -199,9 +208,9 @@ def get_producao(produtor_id):
     # get dataframe data
 
     df_producao = pd.read_csv("backend/database/producao.csv")
-    filter = df_producao["produtor_id"] == int(produtor_id)
 
-    df_producao = df_producao.where(filter)
+    df_producao = df_producao[df_producao["produtor_id"] == int(produtor_id)]
+
 
     return {"success": True, "df": df_producao.to_dict('records')}
 
