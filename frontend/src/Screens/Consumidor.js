@@ -13,33 +13,71 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Imoveis } from '../components';
+import { getImoveis } from '../components';
+import logo from '../icon_slegenda.png';
+import './consumidor.css';
 
 
-const theme = createTheme();
+
+const theme = createTheme({
+    typography: {
+        fontFamily: [
+            'Montserrat',
+            'serif',
+        ].join(','),
+    },
+    palette: {
+        primary: {
+            main: '#F49C22'},
+        secondary: {main: '#333333'},
+        background: {main: '#FFFF'},
+    }
+  })
 
 function Consumidor() {
-    const imoveis = [
-        { id: 0, nome: 'Imóvel 1', gasto: 100.00, consumo: 1000.00 },
-        { id: 1, nome: 'Imóvel 2', gasto: 70.00, consumo: 900.00 },
-        { id: 2,nome: 'Imóvel 3', gasto: 50.50, consumo: 800.00 },
-    ];
     
+    const imoveis = {
+        "df": [
+            {
+                "consumo": 350,
+                "economia": 105.69999999999999,
+                "gastos": 175.0,
+                "imovel_id": 1,
+                "nome_distribuidora": "Light",
+                "nome_imovel": "Casa"
+            },
+            {
+                "consumo": 900,
+                "economia": 346.8,
+                "gastos": 375.0,
+                "imovel_id": 2,
+                "nome_distribuidora": "Light",
+                "nome_imovel": "Imóvel"
+            }
+        ],
+        "success": true
+    }
+
     
-    
-    const areaImoveis = imoveis.map(imovel =>(
-        <Imoveis key={imovel.id} nome={imovel.nome} gasto={imovel.gasto} consumo={imovel.consumo} />
+
+    const areaImoveis = imoveis.df.map(imovel =>(
+        <Imoveis key={imovel.imovel_id} nome={imovel.nome_imovel} gasto={imovel.gastos} consumo={imovel.consumo} />
         ));
+
 
     return (
 
         <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
+            <Container >
                 <CssBaseline />
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        height: '100%',
                         
                     }}
                 >
@@ -48,26 +86,28 @@ function Consumidor() {
                             marginTop: 5,
                             display: 'flex',
                             flexDirection: 'row',
-                            alignItems: 'start',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                             border: '2px solid',
                             borderRadius: '10px',
                         }}
                     >
                         
-                        <Typography component="h1" variant="h4" sx={{ margin: 6 }}>Menu</Typography>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main', margin: 6 }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+                        <Typography component="h1" variant="h4" sx={{ margin: "5px" }} fontSize= "25px">Oi, 
+                            <Typography component="h1" variant="h4" sx={{ margin: "5px" }} color="primary.main" fontSize= "35px">Patrick!</Typography>
+                        </Typography>
+                        <img className='Icon' src={logo} alt="logo"/>
                     </Box>
                     <Box
                         sx={{
-                            margin: 1,
+                            margin: 'none',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
+                            width: 'md',
                         }}
                     >
-                        <Typography component="h1" variant="h5" sx={{ margin: 5 }}>Qnt Economizou</Typography>
+                        <Typography component="h1" variant="h5" sx={{ margin: 5 }}>Você economizou R$23,12!</Typography>
                         {areaImoveis}
                     </Box>
                 </Box>

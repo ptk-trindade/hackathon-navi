@@ -14,10 +14,23 @@ import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import VolcanoIcon from '@mui/icons-material/Volcano';
 import Button from '@mui/material/Button';
 
-const theme = createTheme();
+const theme = createTheme({
+    typography: {
+        fontFamily: [
+            'Montserrat',
+            'serif',
+        ].join(','),
+    },
+    palette: {
+        primary: {
+            main: '#F49C22'},
+        secondary: {main: '#333333'},
+        background: {main: '#FFFF'},
+    }
+  })
 
 function check_energia(produtor){
-    const SX = {width: "50px", height: "50px"}
+    const SX = {width: "50px", height: "50px", color: "primary.main"}
     if (produtor.energia_biomassa){
         return (<GrassIcon sx = {SX}/>)
     }
@@ -55,8 +68,7 @@ export default function AddContrato() {
             "energia_solar": true,
             "id": 1,
             "nome": "energYes",
-            "preco_kwh_dia": 0.4,
-            "preco_kwh_noite": 0.6
+            "preco_kwh": 0.6,
         },
         {
             "Unnamed: 0": 1,
@@ -70,21 +82,20 @@ export default function AddContrato() {
             "energia_solar": false,
             "id": 2,
             "nome": "intelithermal",
-            "preco_kwh_dia": 0.5,
-            "preco_kwh_noite": 0.5
+            "preco_kwh": 0.5,
         }
     ]
 
     const dados_produtor = dados.map(produtor =>(
-        <Produtores  nome = {produtor.nome} precoNoite = {produtor.preco_kwh_noite} precoDia = {produtor.preco_kwh_dia} energia = {check_energia(produtor)}/>
+        <Produtores key={produtor.id}  nome = {produtor.nome} preco = {produtor.preco_kwh} energia = {check_energia(produtor)}/>
     ))
 
 
     return(
         <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" >
                 <CssBaseline />
-                <Button href='/Consumidor' sx={{m: 5}}>Voltar</Button>  
+                <Button variant="contained" href='/Consumidor' sx={{m: 5}}>Voltar</Button>  
                 {dados_produtor}
             </Container>
         </ThemeProvider>

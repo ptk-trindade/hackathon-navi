@@ -10,7 +10,21 @@ import { IconButton } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
-const theme = createTheme();
+const theme = createTheme({
+    typography: {
+        fontFamily: [
+            'Montserrat',
+            'serif',
+        ].join(','),
+    },
+    palette: {
+        primary: {
+            main: '#F49C22'
+        },
+        secondary: { main: '#333333' },
+        background: { main: '#FFFF' },
+    }
+})
 
 export default function Expand() {
     const url = window.location.href;
@@ -18,7 +32,7 @@ export default function Expand() {
     const dados = {
         "consumo_dia": 750,
         "consumo_noite": 500,
-        "economia": 402.5000000000001,
+        "economia": 10.08,
         "energia_biomassa": false,
         "energia_eolica": false,
         "energia_fossil": false,
@@ -29,9 +43,9 @@ export default function Expand() {
         "energia_solar": true,
         "gastos_dia": 300.0,
         "gastos_noite": 300.0,
-        "gastos_total": 600.0,
+        "gastos_total": 175.0,
         "id_y": 19,
-        "nome_x": "apartamento",
+        "nome_x": "Casa",
         "nome_y": "energYes",
         "periodo": "2022-04",
         "preco_kwh_dia": 0.4,
@@ -41,74 +55,93 @@ export default function Expand() {
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <Button href='/Consumidor' sx={{m: 5}}>Voltar</Button>  
-
-                <Box sx={{
+                <Box m={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}>
+                    <Button variant='contained' href='/Consumidor' sx={{ m: 5 }}>Voltar</Button>
                     <Box sx={{
                         display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'space-around',
-                        margin: '10px',
-                    }}>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            margin: '30px',
-                        }}>
-                            <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }}>Nome Imóvel:</Typography>
-                            <Typography component="h1" variant="h4" sx={{ marginBottom: "2" }}>{dados.nome_x}</Typography>
-                        </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            margin: '30px',
-                        }}>
-                            <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }}>Economia:</Typography>
-                            <Typography component="h1" variant="h4" sx={{ marginBottom: "2" }}>R${parseFloat(dados.economia).toFixed(2)}</Typography>
-                        </Box>
-                    </Box>
-                </Box>
-
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    margin: '30px',
-                }}>
-                    <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }}>Gasto Total:</Typography>
-                    <Typography component="h2" variant="h4" sx={{ marginBottom: "2" }}>R${dados.gastos_total}</Typography>
-                </Box>
-
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    margin: '10px',
-                }}>
-                    <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }}>Produtor:</Typography>
-
-
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        margin: '10px',
-                        width: '100%',
-                    }}>
-                        <Typography component="h2" variant="h4" sx={{ marginBottom: "2", }}>{dados.nome_y}</Typography>
-                        <SolarPowerIcon sx={{ width: "50px", height: "50px" }} />
-                    </Box>
-                    <IconButton sx={{ width: "100px"}} href="/Consumidor/AdicionarContrato">
-                            <AddCircleIcon />
-                    </IconButton>
-                </Box>
+                        justifyContent: 'center',
+                        backgroundColor: '#333333',
+                        width: '450px',
+                        height: '450px',
+                        borderRadius: '15px',
+                        border: '5px solid',
 
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '1px',
+                                flexWrap: 'wrap',
+                            }}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    margin: '15px',
+                                }}>
+                                    <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }} color="#F6AD4C">Nome Imóvel:</Typography>
+                                    <Typography component="h1" variant="h4" sx={{ marginBottom: "2" }} color='#FFFF'>{dados.nome_x}</Typography>
+                                </Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    marginLeft: '15px',
+                                }}>
+                                    <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }} color="#F6AD4C">Economia:</Typography>
+                                    <Typography component="h1" variant="h4" sx={{ marginBottom: "2" }} color='#FFFF'>R${parseFloat(dados.economia).toFixed(2)}</Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            margin: '30px',
+                        }}>
+                            <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }} color="#F6AD4C">Gasto Total:</Typography>
+                            <Typography component="h2" variant="h4" sx={{ marginBottom: "2" }} color='#FFFF'>R${parseFloat(dados.gastos_total).toFixed(2)}</Typography>
+                        </Box>
+
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            margin: '10px',
+                        }}>
+                            <Typography component="h3" variant="h4" sx={{ fontSize: 15, marginRight: "auto" }} color="#F6AD4C">Produtor:</Typography>
+
+
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                margin: '10px',
+                                width: '100%',
+                            }}>
+                                <Typography component="h2" variant="h4" sx={{ marginBottom: "2", }} color='#FFFF'>{dados.nome_y}</Typography>
+                                <SolarPowerIcon sx={{ width: "50px", height: "50px" }} color='primary' />
+                            </Box>
+                            <IconButton sx={{ width: "100px", marginTop: "50px" }} href="/Consumidor/AdicionarContrato">
+                                <AddCircleIcon color="primary" />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                </Box>
             </Container>
         </ThemeProvider>
 

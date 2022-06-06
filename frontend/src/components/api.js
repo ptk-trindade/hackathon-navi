@@ -2,7 +2,18 @@ import axios from "axios";
 const apiClient = axios.create({baseURL: "http://127.0.0.1:5000/", response_type: "json"});
 
 
-const getImoveis = (usuario_id) => {return apiClient.get(`/imoveis/${usuario_id}`)};
+// const getImoveis = (usuario_id) => {return apiClient.get(`/imoveis/${usuario_id}`)};
+
+// async function getImoveis(usuario_id) {
+//     const response = await apiClient.get(`/imoveis/${usuario_id}`);
+//     return response.data
+// }
+
+async function getImoveis(usuario_id){
+    const response = await apiClient.get(`/imoveis/${usuario_id}`);
+    // const json = JSON.stringify(response);
+    return response;
+}
 
 const getImovel = (imovel_id) => {return apiClient.get(`/imoveis/consumo/${imovel_id}`)};
 
