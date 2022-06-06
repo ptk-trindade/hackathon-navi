@@ -12,7 +12,16 @@ Este é o repositório do projeto IlumiNavi, uma iniciativa com o objetivo de mo
 
 ## Requisitos
 
---
+Para rodar esta aplicação é necessário que você tenha as seguintes tecnologias instaladas:
+- Backend:
+  - Python
+    - Pandas
+    - Flask
+- Frontend:
+  - React Native
+    - Material UI
+    - Axios 
+    - React-router-dom
 
 ## Instalação
 
